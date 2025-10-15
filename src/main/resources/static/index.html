@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reservas Hotel</title>
+    <link rel="icon" href="https://icons.getbootstrap.com/assets/icons/building.svg"/>
+    <link rel="stylesheet" href="css/styles.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css"/>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo-container">
+                    <i class="fas fa-hotel logo-icon"></i>
+                    <h1 class="logo">Hotel Reservas</h1>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#habitaciones" class="nav-link"><i class="fas fa-bed"></i> Habitaciones</a></li>
+                    <li class="reserva"><a href="#reservas" class="nav-link"><i class="fas fa-calendar-check "></i> Mis Reservas</a></li>
+                    <li><a href="#" id="login-link" class="nav-link"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a></li>
+                    <li><a href="#" id="register-link" class="nav-link"><i class="fas fa-user-plus"></i> Registrarse</a></li>
+                    <li><a href="#" id="cuenta-link" class="nav-link"><i class="fas fa-user-circle"></i> Cuenta</a></li>
+                    <li><a href="#" id="logout-link" style="display:none;" class="nav-link"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+                    <li><a href="#" id="admin-link" style="display:none;" class="nav-link admin-nav"><i class="fas fa-cogs"></i> Panel Admin</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Sección de Bienvenida para usuarios no autenticados -->
+        <section id="welcome-section" class="hero">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h2 class="hero-title">Bienvenido al Sistema de Reservas</h2>
+                    <p class="hero-subtitle">Gestiona tus reservas de hotel de manera fácil y rápida</p>
+                    <div class="hero-buttons">
+                        <button class="cta-button primary" onclick="cargarHabitaciones()">
+                            <i class="fas fa-bed"></i> Ver Habitaciones Disponibles
+                        </button>
+                        <button class="cta-button secondary" id="login-hero-btn">
+                            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="floating-card">
+                        <i class="fas fa-star"></i>
+                        <h4>Mejor Experiencia</h4>
+                        <p>Clientes satisfechos</p>
+                    </div>
+                    <div class="floating-card">
+                        <i class="fas fa-award"></i>
+                        <h4>Calidad Garantizada</h4>
+                        <p>Servicio premium</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-wave">
+                <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
+                </svg>
+            </div>
+        </section>
+
+        <!-- Sección de Dashboard para usuarios autenticados -->
+        <section id="dashboard-section" class="section" style="display:none;">
+            <div class="container">
+                <div class="dashboard-header">
+                    <h2>Bienvenido, <span id="user-name"></span></h2>
+                    <p>Gestiona tus reservas y explora nuestras opciones</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <h3>Mis Reservas</h3>
+                            <p>Gestiona tus reservas actuales</p>
+                            <button class="cta-button" onclick="cargarMisReservas()">Ver Mis Reservas</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <h3>Habitaciones</h3>
+                            <p>Explora nuestras habitaciones</p>
+                            <button class="cta-button" onclick="cargarHabitaciones()">Ver Habitaciones</button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+                            <div class="card-icon">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <h3>Nueva Reserva</h3>
+                            <p>Realiza una nueva reserva</p>
+                            <button class="cta-button" onclick="mostrarFormularioReserva()">Nueva Reserva</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel de Administración -->
+        <section id="admin-section" class="section admin-panel" style="display:none;">
+            <div class="container">
+                <div class="admin-header">
+                    <h2><i class="fas fa-cogs"></i> Panel de Administración</h2>
+                    <p>Gestiona usuarios, habitaciones y reservaciones</p>
+                </div>
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="mostrarTabAdmin('usuarios')">
+                        <i class="fas fa-users"></i> Usuarios
+                    </button>
+                    <button class="admin-tab" onclick="mostrarTabAdmin('habitaciones')">
+                        <i class="fas fa-bed"></i> Habitaciones
+                    </button>
+                    <button class="admin-tab" onclick="mostrarTabAdmin('reservaciones')">
+                        <i class="fas fa-calendar-check"></i> Reservaciones
+                    </button>
+                </div>
+                
+                <div id="admin-usuarios" class="admin-content">
+                    <h3><i class="fas fa-users-cog"></i> Gestión de Usuarios</h3>
+                    <button class="cta-button primary" onclick="cargarUsuarios()">
+                        <i class="fas fa-sync-alt"></i> Cargar Usuarios
+                    </button>
+                    <div id="usuarios-list" class="admin-list"></div>
+                </div>
+                
+                <div id="admin-habitaciones" class="admin-content" style="display:none;">
+                    <h3><i class="fas fa-bed"></i> Gestión de Habitaciones</h3>
+                    <div class="admin-actions">
+                        <button class="cta-button primary" onclick="cargarHabitacionesAdmin()">
+                            <i class="fas fa-sync-alt"></i> Cargar Habitaciones
+                        </button>
+                        <button class="cta-button secondary" onclick="mostrarFormularioHabitacion()">
+                            <i class="fas fa-plus"></i> Nueva Habitación
+                        </button>
+                    </div>
+                    <div id="habitaciones-admin-list" class="admin-list"></div>
+                </div>
+                
+                <div id="admin-reservaciones" class="admin-content" style="display:none;">
+                    <h3><i class="fas fa-calendar-alt"></i> Gestión de Reservaciones</h3>
+                    <button class="cta-button primary" onclick="cargarReservacionesAdmin()">
+                        <i class="fas fa-sync-alt"></i> Cargar Todas las Reservaciones
+                    </button>
+                    <div id="reservaciones-admin-list" class="admin-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="habitaciones" class="section">
+            <div class="section-header">
+                <h2>Habitaciones Disponibles</h2>
+                <p>Explora nuestras opciones de alojamiento</p>
+            </div>
+            <div id="habitaciones-list" class="grid-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Cargando habitaciones...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="reservas" class="section">
+            <div class="section-header">
+                <h2>Realizar Reserva</h2>
+                <p>Selecciona fechas y habitación para tu estancia</p>
+            </div>
+            <div class="form-container">
+                <form id="reserva-form" class="reserva-form">
+                    <div class="form-group">
+                        <label for="habitacion">
+                            <i class="fas fa-bed"></i> Habitación:
+                        </label>
+                        <select id="habitacion" name="habitacion" required>
+                            <option value="">Seleccione una habitación</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha-inicio">
+                                <i class="fas fa-calendar-plus"></i> Fecha de Check-in:
+                            </label>
+                            <input type="date" id="fecha-inicio" name="fechaInicio" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha-fin">
+                                <i class="fas fa-calendar-minus"></i> Fecha de Check-out:
+                            </label>
+                            <input type="date" id="fecha-fin" name="fechaFin" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div id="resumen-reserva" class="resumen-reserva" style="display: none;">
+                            <h4>Resumen de Reserva</h4>
+                            <p id="noches-reserva"></p>
+                            <p id="precio-total"></p>
+                            <p id="fechaInicioresumen"></p>
+                            <p id="fechaFinresumen"></p>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-button">
+                        <i class="fas fa-check-circle"></i> Confirmar Reserva
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="mis-reservas-section" class="section">
+            <div class="section-header">
+                <h2>Mis Reservas</h2>
+                <p>Gestiona y revisa tus reservas actuales</p>
+            </div>
+            <div id="mis-reservas-list" class="reservas-container">
+                <!-- Las reservas del usuario se cargarán aquí -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Login -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="login-form">
+                        <div class="mb-3">
+                            <label for="login-email" class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control" id="login-email" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="login-password" class="form-label">Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="login-password" required>
+                                <i id="toggle-password" class="fas fa-eye text-muted" style="cursor: pointer;" onclick="togglePasswordVisibility('login-password', this)"></i>
+                            </div>
+                        </div>
+                        <div class="mb-3 form-check" hidden>
+                            <input type="checkbox" class="form-check-input" id="admin-login">
+                            <label class="form-check-label" for="admin-login">Acceso de Administrador</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">
+                        <i class="fas fa-user-plus"></i> Registrarse
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="register-form">
+                        <div class="mb-3">
+                            <label for="register-nombre" class="form-label">Nombre</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="register-nombre" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="register-apellido" class="form-label">Apellido</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="register-apellido" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="register-telefono" class="form-label">Teléfono</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="register-telefono" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="register-email" class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control" id="register-email" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="register-password" class="form-label">Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="register-password" required>
+                                <i id="toggle-password" class="fas fa-eye text-muted" style="cursor: pointer;" onclick="togglePasswordVisibility('register-password', this)"></i>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-user-plus"></i> Registrarse
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-hotel"></i>
+                <h3>Hotel Reservas</h3>
+            </div>
+            <p>&copy; 2024 Sistema de Reservas Hotel. Todos los derechos reservados.</p>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js"></script>
+    <script src="js/validaciones.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
